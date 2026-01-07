@@ -210,11 +210,24 @@
             }
 
             .calendar-wrapper {
-                padding: 0 60px;
+                padding: 0 50px;
+            }
+
+            .calendar-container {
+                overflow-x: hidden;
+            }
+
+            .calendar-scroll {
+                gap: 0;
+                padding: 20px 0;
             }
 
             .day-column {
-                min-width: 300px;
+                min-width: calc(100vw - 100px);
+                width: calc(100vw - 100px);
+                flex-shrink: 0;
+                flex-grow: 0;
+                margin: 0;
             }
 
             .day-number {
@@ -239,9 +252,9 @@
             }
 
             .nav-arrow {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
             }
         }
     </style>
@@ -405,8 +418,17 @@
             }
         }
 
+        function getSlideAmount() {
+            // On mobile (width < 768px), slide by full viewport width minus padding
+            if (window.innerWidth <= 768) {
+                return window.innerWidth - 100; // Full day width on mobile
+            }
+            // On desktop/tablet, slide by column width + gap
+            return 430;
+        }
+
         function slideLeft() {
-            const slideAmount = 430;
+            const slideAmount = getSlideAmount();
             currentPosition += slideAmount;
             if (currentPosition > 0) currentPosition = 0;
             calendarScroll.style.transform = `translateX(${currentPosition}px)`;
@@ -414,7 +436,7 @@
         }
 
         function slideRight() {
-            const slideAmount = 430;
+            const slideAmount = getSlideAmount();
             const maxScroll = calendarScroll.scrollWidth - calendarScroll.parentElement.offsetWidth;
             currentPosition -= slideAmount;
             if (Math.abs(currentPosition) > maxScroll) {
@@ -426,7 +448,17 @@
 
         // Initialize
         updateArrows();
-        window.addEventListener('resize', updateArrows);
+        
+        // Update on resize and recalculate position if needed
+        window.addEventListener('resize', () => {
+            updateArrows();
+            // Recalculate position to prevent issues on orientation change
+            const maxScroll = calendarScroll.scrollWidth - calendarScroll.parentElement.offsetWidth;
+            if (Math.abs(currentPosition) > maxScroll) {
+                currentPosition = -maxScroll;
+                calendarScroll.style.transform = `translateX(${currentPosition}px)`;
+            }
+        });
     </script>
 </body>
 </html>
