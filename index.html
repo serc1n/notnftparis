@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOTNFTPARIS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            padding: 40px 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            margin: 0;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 0 40px 40px;
+            border-bottom: 2px solid #fff;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -2px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            opacity: 0.7;
+        }
+
+        .calendar-wrapper {
+            position: relative;
+            padding: 0 90px;
+            width: 100%;
+        }
+
+        .calendar-container {
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .calendar-scroll {
+            display: flex;
+            gap: 20px;
+            transition: transform 0.4s ease;
+            padding: 20px 20px;
+            width: 100%;
+        }
+
+        .day-column {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .day-header {
+            margin-bottom: 25px;
+            text-align: center;
+            padding: 20px 10px;
+            border-bottom: 3px solid #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .day-number {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+
+        .day-month {
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .day-separator {
+            font-size: 1.5rem;
+            font-weight: 200;
+            margin: 0 10px;
+            opacity: 0.5;
+        }
+
+        .day-name {
+            font-size: 1.1rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            text-transform: capitalize;
+        }
+
+        .events-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .event-card {
+            background-color: #fff;
+            color: #000;
+            padding: 0;
+            border: 3px solid #fff;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+            height: 820px;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .luma-embed-container {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 0;
+            overflow: hidden;
+        }
+
+        .luma-embed-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            background-color: #fff;
+            border: 3px solid #fff;
+            color: #000;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .nav-arrow:hover {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .nav-arrow.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .nav-arrow.left {
+            left: 10px;
+        }
+
+        .nav-arrow.right {
+            right: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 40px 0;
+            margin-top: 60px;
+            border-top: 2px solid #fff;
+            opacity: 0.5;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1200px) {
+            .calendar-scroll {
+                width: auto;
+            }
+
+            .day-column {
+                min-width: 350px;
+                flex-shrink: 0;
+                flex-grow: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .calendar-wrapper {
+                padding: 0 60px;
+            }
+
+            .day-column {
+                min-width: 300px;
+            }
+
+            .day-number {
+                font-size: 2.2rem;
+            }
+
+            .day-month {
+                font-size: 1.4rem;
+                letter-spacing: 3px;
+            }
+
+            .day-separator {
+                font-size: 1.2rem;
+            }
+
+            .day-name {
+                font-size: 0.95rem;
+            }
+
+            .event-card {
+                height: 750px;
+            }
+
+            .nav-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NOTNFTPARIS</h1>
+            <p class="subtitle">Event Calendar</p>
+        </header>
+
+        <div class="calendar-wrapper">
+            <div class="nav-arrow left" onclick="slideLeft()">‹</div>
+            <div class="nav-arrow right" onclick="slideRight()">›</div>
+            
+            <div class="calendar-container">
+                <div class="calendar-scroll" id="calendarScroll">
+                    <!-- Events will be generated here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 NOT NFTPARIS. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // ========================================
+        // 📅 EVENT CONFIGURATION
+        // ========================================
+        // Simply add your event IDs below for each date
+        // Format: 'DD Mon \'YY': ['event-id-1', 'event-id-2', ...]
+        
+        const eventsByDate = {
+            '04 February \ Wednesday': [
+                'blogo4c2'
+            ],
+            '05 February \ Thursday': [
+                'mduwgdec',
+                'e1qclurj',
+                'blogo4c2',
+                'vz8dpnie'
+            ],
+            '06 February \ Friday': [
+                '16zpnfro',
+                'ohow98qk',
+                'blogo4c2',
+                'uumobx50'
+            ],
+            '07 February \ Saturday': [
+                'rdgfncdt',
+                'lelwmaem',
+                'blogo4c2',
+                'zv61igu0'
+            ],
+            '08 February \ Sunday': [
+                    'blogo4c2'
+                ]
+        };
+
+        // ========================================
+        // 🎨 CALENDAR GENERATION
+        // ========================================
+        // Don't edit below unless you know what you're doing
+        
+        const calendarScroll = document.getElementById('calendarScroll');
+        
+        // Generate calendar from config
+        Object.entries(eventsByDate).forEach(([date, eventIds]) => {
+            // Create day column
+            const dayColumn = document.createElement('div');
+            dayColumn.className = 'day-column';
+            
+            // Parse date format: "04 February \ Wednesday" or "04 February Wednesday"
+            // Handle both backslash and space separators
+            let datePart, dayName;
+            
+            if (date.includes('\\')) {
+                const parts = date.split('\\').map(p => p.trim());
+                datePart = parts[0].split(' ');
+                dayName = parts[1];
+            } else {
+                // Fallback: split by spaces and take last part as day name
+                const allParts = date.split(' ').map(p => p.trim());
+                dayName = allParts[allParts.length - 1];
+                datePart = allParts.slice(0, 2); // First two parts: day and month
+            }
+            
+            const dayNumber = parseInt(datePart[0]); // Remove leading zero
+            const monthFull = datePart[1];
+            
+            // Convert month to abbreviation
+            const monthMap = {
+                'January': 'Jan', 'February': 'Feb', 'March': 'Mar', 'April': 'Apr',
+                'May': 'May', 'June': 'Jun', 'July': 'Jul', 'August': 'Aug',
+                'September': 'Sep', 'October': 'Oct', 'November': 'Nov', 'December': 'Dec'
+            };
+            const monthAbbr = monthMap[monthFull] || monthFull;
+            
+            // Create day header with styled parts
+            const dayHeader = document.createElement('div');
+            dayHeader.className = 'day-header';
+            dayHeader.innerHTML = `
+                <span class="day-number">${dayNumber}</span>
+                <span class="day-month">${monthAbbr}</span>
+                <span class="day-separator">//</span>
+                <span class="day-name">${dayName}</span>
+            `;
+            dayColumn.appendChild(dayHeader);
+            
+            // Create events stack
+            const eventsStack = document.createElement('div');
+            eventsStack.className = 'events-stack';
+            
+            // Add event cards
+            eventIds.forEach(eventId => {
+                const eventCard = document.createElement('div');
+                eventCard.className = 'event-card';
+                
+                const embedContainer = document.createElement('div');
+                embedContainer.className = 'luma-embed-container';
+                
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://lu.ma/embed/event/${eventId}/simple`;
+                iframe.frameBorder = '0';
+                iframe.allowFullscreen = true;
+                iframe.setAttribute('aria-hidden', 'false');
+                iframe.setAttribute('tabindex', '0');
+                
+                embedContainer.appendChild(iframe);
+                eventCard.appendChild(embedContainer);
+                eventsStack.appendChild(eventCard);
+            });
+            
+            dayColumn.appendChild(eventsStack);
+            calendarScroll.appendChild(dayColumn);
+        });
+
+        // ========================================
+        // ⬅️➡️ NAVIGATION
+        // ========================================
+        
+        const leftArrow = document.querySelector('.nav-arrow.left');
+        const rightArrow = document.querySelector('.nav-arrow.right');
+        let currentPosition = 0;
+
+        function updateArrows() {
+            const maxScroll = calendarScroll.scrollWidth - calendarScroll.parentElement.offsetWidth;
+            
+            if (currentPosition >= 0) {
+                leftArrow.classList.add('disabled');
+            } else {
+                leftArrow.classList.remove('disabled');
+            }
+
+            if (Math.abs(currentPosition) >= maxScroll) {
+                rightArrow.classList.add('disabled');
+            } else {
+                rightArrow.classList.remove('disabled');
+            }
+        }
+
+        function slideLeft() {
+            const slideAmount = 430;
+            currentPosition += slideAmount;
+            if (currentPosition > 0) currentPosition = 0;
+            calendarScroll.style.transform = `translateX(${currentPosition}px)`;
+            updateArrows();
+        }
+
+        function slideRight() {
+            const slideAmount = 430;
+            const maxScroll = calendarScroll.scrollWidth - calendarScroll.parentElement.offsetWidth;
+            currentPosition -= slideAmount;
+            if (Math.abs(currentPosition) > maxScroll) {
+                currentPosition = -maxScroll;
+            }
+            calendarScroll.style.transform = `translateX(${currentPosition}px)`;
+            updateArrows();
+        }
+
+        // Initialize
+        updateArrows();
+        window.addEventListener('resize', updateArrows);
+    </script>
+</body>
+</html>
