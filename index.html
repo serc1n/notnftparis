@@ -446,18 +446,21 @@
             updateArrows();
         }
 
-        // Touch/Swipe Support for Mobile
+        // Touch/Swipe Support for Mobile - Works anywhere on screen
         let touchStartX = 0;
         let touchEndX = 0;
         let touchStartY = 0;
         let touchEndY = 0;
         
-        calendarScroll.addEventListener('touchstart', (e) => {
+        // Add touch listeners to entire container for full-screen swipe support
+        const container = document.querySelector('.container');
+        
+        container.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
         }, { passive: true });
         
-        calendarScroll.addEventListener('touchend', (e) => {
+        container.addEventListener('touchend', (e) => {
             touchEndX = e.changedTouches[0].screenX;
             touchEndY = e.changedTouches[0].screenY;
             handleSwipe();
