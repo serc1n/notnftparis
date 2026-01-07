@@ -446,6 +446,40 @@
             updateArrows();
         }
 
+        // Touch/Swipe Support for Mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+        
+        calendarScroll.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+        
+        calendarScroll.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        }, { passive: true });
+        
+        function handleSwipe() {
+            const swipeThreshold = 50; // Minimum distance for a swipe
+            const swipeDistanceX = touchEndX - touchStartX;
+            const swipeDistanceY = Math.abs(touchEndY - touchStartY);
+            
+            // Only trigger if horizontal swipe is dominant (not vertical scroll)
+            if (Math.abs(swipeDistanceX) > swipeThreshold && Math.abs(swipeDistanceX) > swipeDistanceY) {
+                if (swipeDistanceX > 0) {
+                    // Swiped right - go to previous day
+                    slideLeft();
+                } else {
+                    // Swiped left - go to next day
+                    slideRight();
+                }
+            }
+        }
+        
         // Initialize
         updateArrows();
         
